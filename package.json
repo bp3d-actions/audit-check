@@ -34,7 +34,7 @@
         "url": "https://github.com/actions-rs/audit-check/issues"
     },
     "dependencies": {
-        "@actions-rs/core": "0.0.9",
+        "core": "git+https://github.com/bp3d-actions/core.git",
         "@actions/core": "^1.2.4",
         "@actions/github": "^2.1.1",
         "npm-check-updates": "^4.1.2",
