@@ -10,10 +10,6 @@ import * as input from './input';
 import * as interfaces from './interfaces';
 import * as reporter from './reporter';
 
-const pkg = require('../package.json'); // eslint-disable-line @typescript-eslint/no-var-requires
-
-const USER_AGENT = `${pkg.name}/${pkg.version} (${pkg.bugs.url})`;
-
 async function getData(): Promise<interfaces.Report> {
     const cargo = await Cargo.get();
     await cargo.findOrInstall('cargo-audit');
@@ -76,9 +72,7 @@ export async function run(actionInput: input.Input): Promise<void> {
         return;
     }
 
-    const client = new github.GitHub(actionInput.token, {
-        userAgent: USER_AGENT,
-    });
+    const client = github.getOctokit(actionInput.token);
     const advisories = report.vulnerabilities.list;
     if (github.context.eventName == 'schedule') {
         core.debug(
@@ -97,7 +91,7 @@ async function main(): Promise<void> {
     try {
         const actionInput = input.get();
         await run(actionInput);
-    } catch (error) {
+    } catch (error: any) {
         core.setFailed(error.message);
     }
 
