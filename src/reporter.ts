@@ -2,7 +2,7 @@ import * as process from 'process';
 
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { GitHub } from '@actions/github/lib/utils'
+import { GitHub } from '@actions/github/lib/utils';
 import * as nunjucks from 'nunjucks';
 
 import { checks } from '@actions-rs/core';
@@ -150,7 +150,9 @@ export async function reportCheck(
         // `GITHUB_HEAD_REF` is set only for forked repos,
         // so we can check if it is a fork and not a base repo.
         if (process.env.GITHUB_HEAD_REF) {
-            core.error(`Unable to publish audit check! Reason: ${error}`);
+            core.error(
+                `Unable to publish audit check! Reason: ${error as string}`,
+            );
             core.warning(
                 'It seems that this Action is executed from the forked repository.',
             );
@@ -208,7 +210,7 @@ async function alreadyReported(
     const { owner, repo } = github.context.repo;
     const results = await client.rest.search.issuesAndPullRequests({
         q: `${advisoryId} in:title repo:${owner}/${repo}`,
-        per_page: 1, // eslint-disable-line @typescript-eslint/camelcase
+        per_page: 1,
     });
 
     if (results.data.total_count > 0) {

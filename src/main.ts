@@ -22,7 +22,8 @@ async function getData(): Promise<interfaces.Report> {
         await cargo.call(['audit', '--json'], {
             ignoreReturnCode: true,
             listeners: {
-                stdout: (buffer) => {
+                //Typescript is a peace of shit garbagely broken library: Not even able to infer callback arguments types!!! I have never seen a such a garbage broken type system!!
+                stdout: (buffer: Buffer) => {
                     stdout += buffer.toString();
                 },
             },
@@ -36,7 +37,7 @@ async function getData(): Promise<interfaces.Report> {
         core.endGroup();
     }
 
-    return JSON.parse(stdout);
+    return JSON.parse(stdout) as interfaces.Report;
 }
 
 export async function run(actionInput: input.Input): Promise<void> {
@@ -91,11 +92,11 @@ async function main(): Promise<void> {
     try {
         const actionInput = input.get();
         await run(actionInput);
-    } catch (error: any) {
-        core.setFailed(error.message);
+    } catch (error) {
+        core.setFailed(error as string);
     }
 
     return;
 }
 
-main();
+void main();
